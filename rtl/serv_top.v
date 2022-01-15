@@ -97,7 +97,7 @@ module serv_top
 
    wire          ctrl_pc_en;
    wire          jump;
-   wire          jal_or_jalr;
+   wire          ctrl_rd_en;
    wire          utype;
    wire 	 mret;
    wire          imm;
@@ -237,7 +237,7 @@ module serv_top
    wire 	pdbus_en;
    wire 	pimmdec_en1;
    wire 	prd_alu_en;
-   wire 	pjal_or_jalr;
+   wire 	pctrl_rd_en;
    wire 	prd_mem_en;
    wire 	timmdec_ctrl3;
    
@@ -250,8 +250,8 @@ module serv_top
    assign bufreg_imm_en  = !mdu_op &              pbufreg_imm_en;
    assign dbus_en        = !mdu_op &              pdbus_en;
    assign rd_alu_en      = !mdu_op & !rd_csr_en & prd_alu_en;
-   assign jal_or_jalr    =           !rd_csr_en & pjal_or_jalr;
-   assign rd_mem_en      =  mdu_op |              prd_mem_en /*& !rd_csr_en*/;
+   assign ctrl_rd_en     =           !rd_csr_en & pctrl_rd_en;
+   assign rd_mem_en      =  mdu_op |              prd_mem_en;
    assign immdec_ctrl[3] =            rd_csr_en | timmdec_ctrl3;
    assign immdec_en[1]   = csr_imm_en | pimmdec_en1;
 
@@ -306,7 +306,7 @@ module serv_top
       .o_bufreg_imm_en    (pbufreg_imm_en   ),
       .o_bufreg_clr_lsb   (bufreg_clr_lsb  ),
       .o_bufreg_sh_signed (bufreg_sh_signed),
-      .o_ctrl_jal_or_jalr (pjal_or_jalr   ),
+      .o_ctrl_rd_en (pctrl_rd_en   ),
       .o_ctrl_utype       (utype         ),
       .o_ctrl_pc_rel      (pc_rel        ),
       .o_alu_sub          (alu_sub       ),
@@ -417,7 +417,7 @@ module serv_top
       .i_cnt2     (cnt2),
       //Control
       .i_jump     (jump),
-      .i_jal_or_jalr (jal_or_jalr),
+      .i_rd_en    (ctrl_rd_en),
       .i_utype    (utype),
       .i_pc_rel   (pc_rel),
       .i_trap     (trap | mret),

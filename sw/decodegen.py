@@ -343,25 +343,25 @@ always @(posedge i_clk)
         s += f"      mem[{i}] = {width}'h{m:0{(width+3)//4}x};\n"
 
     body += "\nalways @(posedge i_clk) begin\n"
-    body += "if (i_en) begin\n"
-    body += "   //MDU/CSR/Ext\n"
-    body += "   o_mdu_op     <= MDU & (i_opcode == 5'b01100) & i_imm25;\n"
-    body += "   o_ext_funct3 <=  MDU ? i_funct3 : 3'b000;\n"
-    body += "   o_ebreak         <= CSR & (i_op20);\n"
-    body += "   o_rd_csr_en      <= CSR & (i_opcode[4] & i_opcode[2] &  (|i_funct3));\n"
-    body += "   o_ctrl_mret      <= CSR & (i_opcode[4] & i_opcode[2] & !(|i_funct3) &  i_op21);\n"
-    body += "   o_e_op           <= CSR & (i_opcode[4] & i_opcode[2] & !(|i_funct3) & !i_op21);\n"
-    body += "   o_csr_en         <= CSR & (i_op20 | (i_op26 & !i_op21));\n"
-    body += "   o_csr_mstatus_en <= CSR & (!i_op26 & !i_op22);\n"
-    body += "   o_csr_mie_en     <= CSR & (!i_op26 &  i_op22 & !i_op20);\n"
-    body += "   o_csr_mcause_en  <= CSR & (         i_op21 & !i_op20);\n"
-    body += "   o_csr_source1    <= CSR & (i_funct3[1]);\n"
-    body += "   o_csr_source0    <= CSR & (i_funct3[0]);\n"
-    body += "   o_csr_d_sel      <= CSR & (i_funct3[2]);\n"
-    body += "   o_csr_imm_en     <= CSR & (i_opcode[4] & i_opcode[2] & i_funct3[2]);\n"
-    body += "   o_csr_addr1      <= CSR & (i_op26 & i_op20);\n"
-    body += "   o_csr_addr0      <= CSR & (!i_op26 | i_op21);\n"
-    body += "end\n"
+    body += "   if (i_en) begin\n"
+    body += "      //MDU/CSR/Ext\n"
+    body += "      o_mdu_op     <= MDU & (i_opcode == 5'b01100) & i_imm25;\n"
+    body += "      o_ext_funct3 <= MDU ? i_funct3 : 3'b000;\n"
+    body += "      o_ebreak         <= CSR & (i_op20);\n"
+    body += "      o_rd_csr_en      <= CSR & (i_opcode[4] & i_opcode[2] &  (|i_funct3));\n"
+    body += "      o_ctrl_mret      <= CSR & (i_opcode[4] & i_opcode[2] & !(|i_funct3) &  i_op21);\n"
+    body += "      o_e_op           <= CSR & (i_opcode[4] & i_opcode[2] & !(|i_funct3) & !i_op21);\n"
+    body += "      o_csr_en         <= CSR & (i_op20 | (i_op26 & !i_op21));\n"
+    body += "      o_csr_mstatus_en <= CSR & (!i_op26 & !i_op22);\n"
+    body += "      o_csr_mie_en     <= CSR & (!i_op26 &  i_op22 & !i_op20);\n"
+    body += "      o_csr_mcause_en  <= CSR & (         i_op21 & !i_op20);\n"
+    body += "      o_csr_source1    <= CSR & (i_funct3[1]);\n"
+    body += "      o_csr_source0    <= CSR & (i_funct3[0]);\n"
+    body += "      o_csr_d_sel      <= CSR & (i_funct3[2]);\n"
+    body += "      o_csr_imm_en     <= CSR & (i_opcode[4] & i_opcode[2] & i_funct3[2]);\n"
+    body += "      o_csr_addr1      <= CSR & (i_op26 & i_op20);\n"
+    body += "      o_csr_addr0      <= CSR & (!i_op26 | i_op21);\n"
+    body += "   end\n"
     body += "end\n"
         
     with open('serv_mem_decode.v', 'w') as f:
@@ -458,8 +458,8 @@ ctrlmap = \
     'bufreg_imm_en'   : '  1111111111111111      000  0   00  ',
     'bufreg_clr_lsb'  : '  1011111100000000      000  0   00  ',
     'bufreg_sh_signed': '                         01      01  ',
-    'ctrl_jal_or_jalr': '0011      00000   0000000000000000000',
-    'ctrl_utype'      : '110000000000000   0000000000000000000',
+    'ctrl_rd_en'      : '1111      00000   0000000000000000000',
+    'ctrl_utype'      : '1100                                 ',
     'ctrl_pc_rel'     : '0110111111                           ',
     'rd_op'           : '1111000000111110001111111111111111111',
     'alu_sub'         : '    111111        011      01 11     ',
