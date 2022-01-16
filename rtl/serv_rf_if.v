@@ -52,12 +52,12 @@ module serv_rf_if
 
    wire 	     rd_wen = i_rd_wen & (|i_rd_waddr);
 
-   generate
-   if (WITH_CSR) begin
    wire 	     rd = (i_ctrl_rd ) |
 			  (i_alu_rd & i_rd_alu_en) |
-			  (i_csr_rd & i_rd_csr_en) |
+			  (WITH_CSR & i_csr_rd & i_rd_csr_en) |
 			  (i_mem_rd & i_rd_mem_en);
+   generate
+   if (WITH_CSR) begin
 
    wire 	     mtval = i_mtval_pc ? i_bad_pc : i_bufreg_q;
 
@@ -120,10 +120,6 @@ module serv_rf_if
    assign o_csr_pc = i_rdata1;
 
    end else begin
-      wire 	     rd = (i_ctrl_rd ) |
-			  (i_alu_rd & i_rd_alu_en) |
-			  (i_mem_rd & i_rd_mem_en);
-
       assign 	     o_wdata0 = rd;
       assign	     o_wdata1 = 1'b0;
 
