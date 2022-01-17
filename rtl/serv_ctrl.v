@@ -13,7 +13,6 @@ module serv_ctrl
    input wire 	     i_cnt2,
    //Control
    input wire 	     i_jump,
-   input wire 	     i_rd_en,
    input wire 	     i_utype,
    input wire 	     i_pc_rel,
    input wire 	     i_trap,
@@ -54,7 +53,7 @@ module serv_ctrl
       else
 	assign new_pc = i_jump ? pc_plus_offset_aligned : pc_plus_4;
    endgenerate
-   assign o_rd  = i_rd_en & (i_utype ? pc_plus_offset_aligned : pc_plus_4);
+   assign o_rd  = i_utype ? pc_plus_offset_aligned : pc_plus_4;
 
    assign offset_a = i_pc_rel & pc;
    assign offset_b = i_utype ? (i_imm & i_cnt12to31): i_buf;

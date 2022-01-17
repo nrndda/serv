@@ -36,7 +36,7 @@ module serv_rf_if
    input wire 		      i_csr_rd,
    input wire 		      i_rd_csr_en,
    input wire 		      i_mem_rd,
-   input wire 		      i_rd_am_en,
+   input wire 		      i_rd_ctrl_sel,
 
    //RS1 read port
    input wire [4:0] 	      i_rs1_raddr,
@@ -52,9 +52,9 @@ module serv_rf_if
 
    wire 	     rd_wen = i_rd_wen & (|i_rd_waddr);
 
-   wire 	     rd = (i_ctrl_rd ) |
-			  (i_rd_am_en & (i_rd_alu_sel ? i_alu_rd : i_mem_rd)) |
-			  (WITH_CSR & i_csr_rd & i_rd_csr_en);
+   wire 	     rd = (WITH_CSR & i_rd_csr_en) ? i_csr_rd :
+		     i_rd_ctrl_sel ? i_ctrl_rd :
+		     i_rd_alu_sel  ? i_alu_rd : i_mem_rd;
    generate
    if (WITH_CSR) begin
 

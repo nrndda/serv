@@ -89,7 +89,7 @@ module serv_top
 
    wire 	 rd_alu_sel;
    wire 	 rd_csr_en;
-   wire 	 rd_am_en;
+   wire 	 rd_ctrl_sel;
    wire          ctrl_rd;
    wire          alu_rd;
    wire          mem_rd;
@@ -97,7 +97,6 @@ module serv_top
 
    wire          ctrl_pc_en;
    wire          jump;
-   wire          ctrl_rd_en;
    wire          utype;
    wire 	 mret;
    wire          imm;
@@ -237,8 +236,7 @@ module serv_top
    wire 	pdbus_en;
    wire 	pimmdec_en1;
    wire 	prd_alu_sel;
-   wire 	pctrl_rd_en;
-   wire 	prd_am_en;
+   wire 	prd_ctrl_sel;
    wire 	timmdec_ctrl3;
    
    
@@ -250,8 +248,7 @@ module serv_top
    assign bufreg_imm_en  = !mdu_op &              pbufreg_imm_en;
    assign dbus_en        = !mdu_op &              pdbus_en;
    assign rd_alu_sel     = !mdu_op & !rd_csr_en & prd_alu_sel;
-   assign ctrl_rd_en     =           !rd_csr_en & pctrl_rd_en;
-   assign rd_am_en      =  mdu_op |              prd_am_en;
+   assign rd_ctrl_sel    = !mdu_op &              prd_ctrl_sel;
    assign immdec_ctrl[3] =            rd_csr_en | timmdec_ctrl3;
    assign immdec_en[1]   = csr_imm_en | pimmdec_en1;
 
@@ -306,7 +303,6 @@ module serv_top
       .o_bufreg_imm_en    (pbufreg_imm_en   ),
       .o_bufreg_clr_lsb   (bufreg_clr_lsb  ),
       .o_bufreg_sh_signed (bufreg_sh_signed),
-      .o_ctrl_rd_en (pctrl_rd_en   ),
       .o_ctrl_utype       (utype         ),
       .o_ctrl_pc_rel      (pc_rel        ),
       .o_alu_sub          (alu_sub       ),
@@ -329,7 +325,7 @@ module serv_top
       .o_immdec_en1       (pimmdec_en1  ),
       .o_immdec_en2       (immdec_en[2]  ),
       .o_immdec_en3       (immdec_en[3]  ),
-      .o_rd_am_en        (prd_am_en),
+      .o_rd_ctrl_sel      (prd_ctrl_sel),
       .o_rd_alu_sel        (prd_alu_sel     ));
 
 
@@ -417,7 +413,6 @@ module serv_top
       .i_cnt2     (cnt2),
       //Control
       .i_jump     (jump),
-      .i_rd_en    (ctrl_rd_en),
       .i_utype    (utype),
       .i_pc_rel   (pc_rel),
       .i_trap     (trap | mret),
@@ -486,7 +481,7 @@ module serv_top
       .i_csr_rd    (csr_rd),
       .i_rd_csr_en (rd_csr_en),
       .i_mem_rd    (mem_rd),
-      .i_rd_am_en (rd_am_en),
+      .i_rd_ctrl_sel (rd_ctrl_sel),
 
       //RS1 read port
       .i_rs1_raddr (rs1_addr),

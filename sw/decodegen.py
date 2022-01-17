@@ -274,18 +274,21 @@ always @(posedge i_clk)
                 body += f"   assign o_{alias} = o_{sig};"
 
     #Some extra signals
-    body += "\n"
+    body += "\n\n"
     body += "   //MDU/CSR/Ext\n"
-    body += "always @(posedge i_clk)\n"
-    body += "   if (i_en) begin\n"
-    body += "      imm25 <= i_imm25;\n"
-    body += "      funct3 <= i_funct3;\n"
-    body += "      opcode <= i_opcode;\n"
-    body += "      op20 <= i_op20;\n"
-    body += "      op21 <= i_op21;\n"
-    body += "      op22 <= i_op22;\n"
-    body += "      op26 <= i_op26;\n"
-    body += "   end\n"
+    body += "   reg imm25;\n"
+    body += "   reg op20;\n"
+    body += "   reg op21;\n"
+    body += "   reg op22;\n"
+    body += "   reg op26;\n\n"
+    body += "   always @(posedge i_clk)\n"
+    body += "      if (i_en) begin\n"
+    body += "         imm25 <= i_imm25;\n"
+    body += "         op20 <= i_op20;\n"
+    body += "         op21 <= i_op21;\n"
+    body += "         op22 <= i_op22;\n"
+    body += "         op26 <= i_op26;\n"
+    body += "      end\n"
     body += "   assign o_mdu_op = MDU & (opcode == 5'b01100) & imm25;\n"
     body += "   assign o_ext_funct3 = funct3;\n"
     body += "   assign o_ebreak = op20;\n"
@@ -451,17 +454,16 @@ ctrlmap = \
     'cond_branch'     : '  00111111                           ',
     'shift_op'        : '  0000000000000000 00   111  100 11  ',
     'two_stage_op'    : '0011111111111111110110001110011101100',
-    'rd_am_en'        : '0000      11111   1111111111111111111',
+    'rd_op'           : '1111000000111110001111111111111111111',
+    'rd_ctrl_sel'     : '1111      00000   0000000000000000000',
     'rd_alu_sel'      : '          00000   1111111111111111111',
     'dbus_en'         : '  0000000011111111 00   000  000 00  ',
     'bufreg_rs1_en'   : '  0100000011111111      111  1   11  ',
     'bufreg_imm_en'   : '  1111111111111111      000  0   00  ',
     'bufreg_clr_lsb'  : '  1011111100000000      000  0   00  ',
     'bufreg_sh_signed': '                         01      01  ',
-    'ctrl_rd_en'      : '1111      00000   0000000000000000000',
     'ctrl_utype'      : '1100                                 ',
     'ctrl_pc_rel'     : '0110111111                           ',
-    'rd_op'           : '1111000000111110001111111111111111111',
     'alu_sub'         : '    111111        011      01 11     ',
     'alu_bool_op1'    : '                     011000  0  00011',
     'alu_bool_op0'    : '                     001111  1  01101',
@@ -487,8 +489,8 @@ print(printmap(ctrlmap))
 print("Creating mem decoder")
 write_mem_decoder(ctrlmap, merged_signals)
 
-#print("Writing post-registered logic decoder")
-#write_post_reg_logic_decoder(ctrlmap, merged_signals)
-#
-#print("Writing pre-registered logic decoder")
-#write_pre_reg_logic_decoder(ctrlmap, merged_signals)
+print("Writing post-registered logic decoder")
+write_post_reg_logic_decoder(ctrlmap, merged_signals)
+
+print("Writing pre-registered logic decoder")
+write_pre_reg_logic_decoder(ctrlmap, merged_signals)
