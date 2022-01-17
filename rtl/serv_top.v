@@ -87,9 +87,9 @@ module serv_top
    wire 	 rd_op;
    wire   mdu_op;
 
-   wire 	 rd_alu_en;
+   wire 	 rd_alu_sel;
    wire 	 rd_csr_en;
-   wire 	 rd_mem_en;
+   wire 	 rd_am_en;
    wire          ctrl_rd;
    wire          alu_rd;
    wire          mem_rd;
@@ -236,9 +236,9 @@ module serv_top
    wire 	pbufreg_imm_en;
    wire 	pdbus_en;
    wire 	pimmdec_en1;
-   wire 	prd_alu_en;
+   wire 	prd_alu_sel;
    wire 	pctrl_rd_en;
-   wire 	prd_mem_en;
+   wire 	prd_am_en;
    wire 	timmdec_ctrl3;
    
    
@@ -249,9 +249,9 @@ module serv_top
    assign bufreg_rs1_en  =  mdu_op |              pbufreg_rs1_en;
    assign bufreg_imm_en  = !mdu_op &              pbufreg_imm_en;
    assign dbus_en        = !mdu_op &              pdbus_en;
-   assign rd_alu_en      = !mdu_op & !rd_csr_en & prd_alu_en;
+   assign rd_alu_sel     = !mdu_op & !rd_csr_en & prd_alu_sel;
    assign ctrl_rd_en     =           !rd_csr_en & pctrl_rd_en;
-   assign rd_mem_en      =  mdu_op |              prd_mem_en;
+   assign rd_am_en      =  mdu_op |              prd_am_en;
    assign immdec_ctrl[3] =            rd_csr_en | timmdec_ctrl3;
    assign immdec_en[1]   = csr_imm_en | pimmdec_en1;
 
@@ -329,8 +329,8 @@ module serv_top
       .o_immdec_en1       (pimmdec_en1  ),
       .o_immdec_en2       (immdec_en[2]  ),
       .o_immdec_en3       (immdec_en[3]  ),
-      .o_rd_mem_en        (prd_mem_en),
-      .o_rd_alu_en        (prd_alu_en     ));
+      .o_rd_am_en        (prd_am_en),
+      .o_rd_alu_sel        (prd_alu_sel     ));
 
 
    serv_immdec immdec
@@ -482,11 +482,11 @@ module serv_top
       .i_rd_waddr  (rd_addr),
       .i_ctrl_rd   (ctrl_rd),
       .i_alu_rd    (alu_rd),
-      .i_rd_alu_en (rd_alu_en),
+      .i_rd_alu_sel (rd_alu_sel),
       .i_csr_rd    (csr_rd),
       .i_rd_csr_en (rd_csr_en),
       .i_mem_rd    (mem_rd),
-      .i_rd_mem_en (rd_mem_en),
+      .i_rd_am_en (rd_am_en),
 
       //RS1 read port
       .i_rs1_raddr (rs1_addr),
